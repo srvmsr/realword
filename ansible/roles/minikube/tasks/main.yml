@@ -1,0 +1,68 @@
+---
+
+- name: install the required packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ minikube_dependencies }}"
+
+- name: start services
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - firewalld
+    - libvirtd
+
+- name: enable autostart for the default network
+  virt_net:
+    autostart: yes
+    name: default
+
+- name: start the default network
+  virt_net:
+    name: default
+    state: active
+
+- name: get kvm2 driver
+  get_url:
+    url: "https://github.com/kubernetes/minikube/releases/download/{{ minikube_version }}/docker-machine-driver-kvm2"
+    dest: "{{ minikube_install_dir }}/docker-machine-driver-kvm2"
+
+- name: chmod kvm driver
+  file:
+    dest: "{{ minikube_install_dir }}/docker-machine-driver-kvm2"
+    mode: 0755
+
+- name: set facts
+  set_fact:
+    translated_architecture: amd64
+  when: ansible_architecture == 'x86_64'
+
+- name: get binaries
+  get_url: url="{{ item.url }}" dest="{{ item.dest }}"
+  with_items:
+    - url: https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-{{ ansible_system|lower }}-amd64
+      dest: "{{ minikube_install_dir }}/minikube"
+    - url: "https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_version }}/bin/{{ ansible_system|lower }}/{{ translated_architecture }}/kubectl"
+      dest: "{{ minikube_install_dir }}/kubectl"
+    - url: "https://github.com/docker/machine/releases/download/{{ docker_machine_version }}/docker-machine-{{ ansible_system }}-{{ ansible_architecture }}"
+      dest: "{{ minikube_install_dir }}/docker-machine"
+
+- name: chmod binaries
+  file: dest="{{ minikube_install_dir }}/{{ item }}" mode=0755
+  with_items:
+    - minikube
+    - kubectl
+    - docker-machine
+
+- name: Start minikube
+  shell: minikube start --force
+  args:
+    executable: /bin/bash
+
+- name: Set kube config and show pods
+  shell: minikube kubectl -- get pods -A
+  args:
+    executable: /bin/bash

@@ -1,0 +1,32 @@
+---
+
+- name: Start minikube
+  shell: minikube start --force
+  args:
+    executable: /bin/bash
+
+- name: Create a Certs directory if it does not exist
+  file:
+    path: /etc/certs
+    state: directory
+    mode: '0755'
+
+- name: Create a localhost CA
+  shell: openssl req  -nodes -new -x509  -subj "/C=DE/ST=Berlin/O=nycicd, Inc./CN=*.localhost.com" -keyout /etc/certs/localhost-ca.key -out /etc/certs/localhost-ca.pem -passout pass:foo
+  args:
+    executable: /bin/bash
+
+- name: Create a server-key
+  shell: openssl genrsa -out /etc/certs/server-key.pem 2048
+  args:
+    executable: /bin/bash
+
+- name: Create a server csr
+  shell: openssl req -new -sha256 -subj "/C=DE/ST=Berlin/O=nycicd, Inc./CN=dashboard.localhost.com" -keyout /etc/certs/server-key.pem -out /etc/certs/dashboard.localhost.com.csr -passout pass:foo
+  args:
+    executable: /bin/bash
+
+- name: Create a server cert
+  shell: openssl x509 -req -in /etc/certs/dashboard.localhost.com.csr -CA /etc/certs/localhost-ca.pem -CAkey /etc/certs/localhost-ca.key -CAcreateserial -out /etc/certs/server.pem -days 500 -sha256
+  args:
+    executable: /bin/bash

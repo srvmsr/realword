@@ -1,0 +1,18 @@
+---
+
+minikube_dependencies:
+  - python-lxml
+  - qemu-kvm
+  - firewalld
+  - dnsmasq
+  - libvirt
+  - virt-install
+  - virt-top
+  - libguestfs-tools
+  - bridge-utils
+
+minikube_install_dir: /usr/local/sbin
+minikube_version: v1.12.0
+kubectl_version: v1.18.0
+docker_machine_version: v0.16.0
+docker_machine_xhyve_driver_version: v0.4.0

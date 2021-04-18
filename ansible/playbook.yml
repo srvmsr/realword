@@ -1,0 +1,4 @@
+- hosts: servers
+  remote_user: root
+  roles:
+    - minikube
