@@ -45,7 +45,7 @@ Jenkins builds the application and create a runtime docker image using multistag
 Versioning of the app is done based on the TAGs on the app repository.
 If no tags are found , version is set to current date and commit id.
 
-Application is exposed on http://<MinikubeIP>:30501/weatherforecast and internally within Kubernetes cluster on http://app:5001/weatherforecast
+Application is exposed on http://MinikubeIP:30501/weatherforecast and internally within Kubernetes cluster on http://app:5001/weatherforecast
 
 Issues:
 - VM may have soft lock/crash . While setting us minikube on Virtualbox environment with nested virtualization. Its a open bug [currently](https://www.virtualbox.org/ticket/19561)
