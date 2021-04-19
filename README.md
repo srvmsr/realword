@@ -13,8 +13,10 @@ A ubuntu/centos VM or host
 3. [Webhookrelay Tokens](https://my.webhookrelay.com/) Used to connect Jenkins to track Github changes.
       Signup and create a pair of token from 
       https://my.webhookrelay.com/tokens
+4. Git credentials
+5. Dockerhub Credentials
 
-## Installing your Minikube instance using ansible
+## Installing your Minikube instance using ansible (ignore if you already have minikube running)
 [Run minikube installtion ](ansible/install.sh)
 
 ***Change the inventory file if not on localhost***
@@ -42,10 +44,10 @@ Jenkins operator automatically discovers the job to be created .
 Deployment is auto tiggered whenever there is a push to the repository.
 Jenkins builds the application and create a runtime docker image using multistage Build.
 
-Versioning of the app is done based on the TAGs on the app repository.
+Versioning of the app is done based on the TAGs on the testapi repository.
 If no tags are found , version is set to current date and commit id.
 
-Application is exposed on http://<MinikubeIP>:30501/weatherforecast and internally within Kubernetes cluster on http://app:5001/weatherforecast
+Application is exposed on http://MinikubeIP:30501/weatherforecast and internally within Kubernetes cluster on http://app:5001/weatherforecast
 
 Issues:
 - VM may have soft lock/crash . While setting us minikube on Virtualbox environment with nested virtualization. Its a open bug [currently](https://www.virtualbox.org/ticket/19561)

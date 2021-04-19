@@ -51,5 +51,6 @@ kubectl -n jenkins get secret jenkins-operator-credentials-cicd -o 'jsonpath={.d
 echo $'\n'"Jenkins Password"
 kubectl -n jenkins get secret jenkins-operator-credentials-cicd -o 'jsonpath={.data.password}' | base64 -d
 
-echo $'\n'"Now login to https://my.webhookrelay.com/buckets and get your webhook public url, configure that on your app git repo"
+echo $'\n'"You can now login to Jenkins and manually trigger the first build"
+echo $'\n'"Or for Auto build triggers login to https://my.webhookrelay.com/buckets and get your webhook public url, configure that on your app git repo"
 
